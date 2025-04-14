@@ -48,12 +48,19 @@
       gap: 2rem;
       padding: 2rem;
     }
-    .articles article {
+    .live-news article {
       background: white;
       padding: 1rem;
       margin-bottom: 1rem;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .live-news article h3 {
+      margin-top: 0;
+    }
+    .live-news article a {
+      color: #1e2a38;
+      text-decoration: none;
     }
     .sidebar {
       background: #fff;
@@ -86,23 +93,12 @@
   </header>
 
   <div class="hero">
-    <h2>Breaking: Major Event Shakes the City</h2>
+    <h2>Live: Real-Time Tech Headlines</h2>
   </div>
 
   <div class="container">
-    <div class="articles">
-      <article>
-        <h3>Technology Takes Over 2025</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo blandit nisi, a lacinia est.</p>
-      </article>
-      <article>
-        <h3>World Leaders Meet to Discuss Climate</h3>
-        <p>Suspendisse commodo, elit sed vestibulum placerat, justo urna convallis erat, ut dapibus neque quam in lorem.</p>
-      </article>
-      <article>
-        <h3>Sports Update: Local Team Wins Again!</h3>
-        <p>Maecenas facilisis ligula at arcu finibus, a imperdiet sem convallis. Curabitur fringilla neque nec massa.</p>
-      </article>
+    <div class="live-news" id="newsContainer">
+      <p>Loading latest headlines...</p>
     </div>
 
     <aside class="sidebar">
@@ -119,6 +115,30 @@
   <footer>
     &copy; 2025 NewsPortal. All rights reserved.
   </footer>
+
+  <script>
+    const API_KEY = 'dd0854f408c34f19a2610579f82317fd';
+    const url = `https://newsapi.org/v2/top-headlines?category=technology&country=us&pageSize=5&apiKey=${API_KEY}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('newsContainer');
+        container.innerHTML = '';
+
+        data.articles.forEach(article => {
+          const el = document.createElement('article');
+          el.innerHTML = `
+            <h3><a href="${article.url}" target="_blank">${article.title}</a></h3>
+            <p>${article.description || 'No description available.'}</p>
+          `;
+          container.appendChild(el);
+        });
+      })
+      .catch(err => {
+        document.getElementById('newsContainer').innerHTML = '<p>Failed to load news. Please try again later.</p>';
+        console.error('Error loading news:', err);
+      });
+  </script>
 </body>
 </html>
-
